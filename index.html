@@ -80,17 +80,19 @@
   header > * { position: relative; z-index: 1; }
   /* hero text sits on the photo; use the page background colour so it reads
      as one with the canvas below */
-  header h1 { color: var(--bg); }
   header .hero-row p { color: rgba(227, 228, 221, 0.75); }
 
+  /* headline is the hand-stencil logo, filled with the page background colour
+     via a mask so it always tracks the theme */
   h1 {
-    font-weight: 900;
-    text-transform: uppercase;
-    font-size: clamp(44px, 9.5vw, 150px);
-    line-height: 0.88;
-    letter-spacing: -0.02em;
+    width: min(82vw, 640px);
+    aspect-ratio: 1116 / 861;
+    background-color: var(--bg);
+    -webkit-mask: url("otatc-logo.png") left bottom / contain no-repeat;
+    mask: url("otatc-logo.png") left bottom / contain no-repeat;
+    font-size: 0; /* hide the accessible text, keep it for screen readers/SEO */
+    color: transparent;
   }
-  h1 .thin { font-weight: 400; }
 
   .hero-row {
     display: flex;
@@ -119,7 +121,7 @@
     position: relative;
   }
   @media (max-width: 560px) {
-    h1 { font-size: clamp(56px, 18vw, 120px); }
+    h1 { width: 88vw; }
   }
 
   figure.shot {
@@ -269,7 +271,7 @@
 </nav>
 
 <header>
-  <h1>Of type <span class="thin">&amp;</span><br>the city</h1>
+  <h1>Of type and the city</h1>
   <div class="hero-row">
     <p>Found Subjects</p>
     <p>London &amp; elsewhere</p>

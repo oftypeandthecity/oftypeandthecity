@@ -20,4 +20,5 @@ const PHOTOS = [
   { src: "photos/DSC0508112-web.jpg", caption: "London 2024" },
   { src: "photos/R000046412-web.jpg", caption: "London 2024" },
   { src: "photos/DSCF120112-web.jpg", caption: "London 2024" },
+  { src: "photos/DSC0507912-web.jpg", caption: "London 2026" },
 ];

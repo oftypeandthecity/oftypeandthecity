@@ -2,5 +2,6 @@
 # only the web-sized "-web" copies get deployed.
 photos/*
 !photos/*-web.jpg
+!photos/instagram/
 
 .DS_Store

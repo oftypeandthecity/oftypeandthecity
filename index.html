@@ -342,11 +342,27 @@ function layoutMasonry() {
   const topItem = new Array(units).fill(null); /* which item currently ends each column */
   const items = [];
 
-  const pending = [...document.querySelectorAll("figure.shot")].map(fig => {
+  /* Mixed sizes for an organic masonry: landscapes always get the wide span;
+     squares/portraits get a stable pseudo-random mix — mostly standard, some
+     wide, an occasional big feature — so the grid doesn't lock into columns. */
+  const pending = [...document.querySelectorAll("figure.shot")].map((fig, i) => {
     const img = fig.querySelector("img");
     const ratio = (img.naturalWidth && img.naturalHeight)
       ? img.naturalWidth / img.naturalHeight : 0.75;
-    return { fig, ratio, span: Math.min(units, ratio > 1.2 ? lSpan : pSpan) };
+    let span;
+    if (ratio > 1.2) {
+      span = lSpan;
+    } else {
+      const r = (i * 2654435761 >>> 0) % 100; /* stable per position */
+      if (units >= 13 && pSpan === 4) {
+        if (r < 8 && ratio > 0.85) span = 8;   /* big feature, squares only */
+        else if (r < 40) span = 5;             /* wide */
+        else span = 4;                          /* standard */
+      } else {
+        span = r < 30 ? lSpan : pSpan;
+      }
+    }
+    return { fig, ratio, span: Math.min(units, span) };
   });
 
   /* can a ledge of width w be tiled exactly by portrait/landscape spans? */

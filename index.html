@@ -66,7 +66,9 @@
 
   /* ---------- Hero ---------- */
   header {
-    min-height: 100vh;
+    /* same aspect ratio as the background photo, so the whole frame is visible */
+    aspect-ratio: 3 / 2;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -74,17 +76,6 @@
     border-bottom: 1px solid var(--line);
     position: relative;
     background: url("photos/DSCF0334-web.jpg") center / cover no-repeat;
-  }
-  /* scrim: keeps the headline readable and fades the photo into the page grey */
-  header::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg,
-      rgba(20, 20, 24, 0.25) 0%,
-      rgba(30, 31, 35, 0.40) 55%,
-      rgba(51, 52, 56, 0.94) 100%);
-    pointer-events: none;
   }
   header > * { position: relative; z-index: 1; }
 
@@ -351,48 +342,82 @@ function layoutMasonry() {
   const topItem = new Array(units).fill(null); /* which item currently ends each column */
   const items = [];
 
-  document.querySelectorAll("figure.shot").forEach(fig => {
+  const pending = [...document.querySelectorAll("figure.shot")].map(fig => {
     const img = fig.querySelector("img");
     const ratio = (img.naturalWidth && img.naturalHeight)
       ? img.naturalWidth / img.naturalHeight : 0.75;
-    const span = Math.min(units, ratio > 1.2 ? lSpan : pSpan);
-
-    let bestX = 0, bestY = Infinity, bestFlat = false;
-    for (let x = 0; x + span <= units; x++) {
-      const seg = heights.slice(x, x + span);
-      const y = Math.max(...seg);
-      const flat = y - Math.min(...seg) < 1;
-      if (y < bestY - 0.5 || (Math.abs(y - bestY) <= 0.5 && flat && !bestFlat)) {
-        bestY = y; bestX = x; bestFlat = flat;
-      }
-    }
-
-    /* no gaps: stretch whatever sits under the landing zone up to meet this photo
-       (the image crops slightly taller via object-fit: cover) */
-    for (let u = bestX; u < bestX + span; u++) {
-      if (heights[u] < bestY - 0.5 && topItem[u]) {
-        const t = topItem[u];
-        t.h = bestY - gap - t.top;
-        for (let v = t.x; v < t.x + t.span; v++) heights[v] = bestY;
-      }
-    }
-
-    const natH = (span * unitW - gap) / ratio;
-    const item = { fig, x: bestX, span, top: bestY, h: natH, natH };
-    items.push(item);
-    for (let u = bestX; u < bestX + span; u++) {
-      heights[u] = bestY + natH + gap;
-      topItem[u] = item;
-    }
+    return { fig, ratio, span: Math.min(units, ratio > 1.2 ? lSpan : pSpan) };
   });
 
-  /* level the bottom edge, as long as no photo has to stretch more than 25% */
+  /* can a ledge of width w be tiled exactly by portrait/landscape spans? */
+  const fillable = w => {
+    if (w === 0) return true;
+    for (let a = 0; a * pSpan <= w; a++) if ((w - a * pSpan) % lSpan === 0) return true;
+    return false;
+  };
+  const soleTop = t => {
+    for (let v = t.x; v < t.x + t.span; v++) if (topItem[v] !== t) return false;
+    return true;
+  };
+
+  let guard = 0;
+  while (pending.length && guard++ < 500) {
+    /* find the lowest ledge: leftmost lowest unit, expanded to its flat run */
+    let minU = 0;
+    for (let u = 1; u < units; u++) if (heights[u] < heights[minU] - 0.5) minU = u;
+    const y = heights[minU];
+    let L = minU, R = minU + 1;
+    while (L > 0 && Math.abs(heights[L - 1] - y) < 1) L--;
+    while (R < units && Math.abs(heights[R] - y) < 1) R++;
+    const run = R - L;
+
+    /* take the first photo that fits AND leaves a tileable remainder, so no
+       stranded slivers; fall back to anything that fits */
+    let idx = pending.findIndex(p => p.span <= run && fillable(run - p.span));
+    if (idx === -1) idx = pending.findIndex(p => p.span <= run);
+
+    if (idx === -1) {
+      /* dead sliver: raise it to the next-lowest neighbour, stretching the
+         photo beneath (slight extra centre-crop) so no hole is left behind */
+      let next = Infinity;
+      if (L > 0) next = heights[L - 1];
+      if (R < units) next = Math.min(next, heights[R]);
+      for (let u = L; u < R; u++) {
+        const t = topItem[u];
+        if (t && soleTop(t)) {
+          t.h = next - gap - t.top;
+          for (let v = t.x; v < t.x + t.span; v++) heights[v] = next;
+        } else {
+          heights[u] = next;
+        }
+      }
+      continue;
+    }
+
+    const p = pending.splice(idx, 1)[0];
+    let span = p.span;
+    if (run === span + 1) span = run; /* absorb a lone spare unit */
+    const top = Math.max(...heights.slice(L, L + span));
+    const natH = (span * unitW - gap) / p.ratio;
+    const item = { fig: p.fig, x: L, span, top, h: natH, natH };
+    items.push(item);
+    for (let u = L; u < L + span; u++) {
+      heights[u] = top + natH + gap;
+      topItem[u] = item;
+    }
+  }
+
+  /* level the bottom edge, as long as no photo has to stretch more than 25%
+     and it's still the bottom-most item across its whole width */
   const maxH = Math.max(...heights);
   const done = new Set();
   for (let u = 0; u < units; u++) {
     const t = topItem[u];
     if (!t || done.has(t)) continue;
     done.add(t);
+    let sole = true;
+    for (let v = t.x; v < t.x + t.span; v++) if (topItem[v] !== t) sole = false;
+    if (!sole) continue;
     const want = maxH - gap - t.top;
     if (want > t.h && want <= t.natH * 1.25) {
       t.h = want;

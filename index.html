@@ -15,7 +15,7 @@
     --ink: #f2f0eb;
     --ink-dim: #aeaba4;
     --line: #595a5f;
-    --gap: 14px;
+    --gap: 24px;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -332,7 +332,7 @@ PHOTOS.forEach((photo, i) => {
    position is currently shortest. */
 function layoutMasonry() {
   const W = grid.clientWidth;
-  const gap = 14;
+  const gap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gap")) || 24;
   /* 13 units: a row of two portraits and a landscape packs flush (4+4+5) */
   let units = 13, pSpan = 4, lSpan = 5;
   if (W <= 560) { units = 1; pSpan = 1; lSpan = 1; }

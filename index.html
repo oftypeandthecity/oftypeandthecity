@@ -10,11 +10,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #222325;
-    --bg-soft: #2b2c2e;
+    --bg: #3f4045;
+    --bg-soft: #494a4f;
     --ink: #f2f0eb;
-    --ink-dim: #98958f;
-    --line: #3a3b3d;
+    --ink-dim: #aeaba4;
+    --line: #595a5f;
     --gap: 14px;
   }
 
@@ -66,13 +66,18 @@
 
   /* ---------- Hero ---------- */
   header {
-    min-height: 62vh;
+    /* same aspect ratio as the background photo, so the whole frame is visible */
+    aspect-ratio: 3 / 2;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding: 0 28px 48px;
     border-bottom: 1px solid var(--line);
+    position: relative;
+    background: url("photos/DSCF0334-web.jpg") center / cover no-repeat;
   }
+  header > * { position: relative; z-index: 1; }
 
   h1 {
     font-weight: 900;
@@ -104,21 +109,19 @@
     padding: var(--gap) 28px 28px;
   }
 
-  /* Masonry: equal-width columns, photos stack at natural height */
+  /* Masonry: JS packs the photos into a 12-unit grid — portraits span 4 units,
+     landscapes span 5 (125% of a portrait's width) */
   .grid {
-    columns: 3;
-    column-gap: var(--gap);
+    position: relative;
   }
-  @media (max-width: 900px) { .grid { columns: 2; } }
   @media (max-width: 560px) {
-    .grid { columns: 1; }
     h1 { font-size: clamp(56px, 18vw, 120px); }
   }
 
   figure.shot {
-    break-inside: avoid;
-    margin: 0 0 var(--gap);
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     cursor: zoom-in;
     background: var(--bg-soft);
     overflow: hidden;
@@ -127,7 +130,8 @@
   figure.shot img {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     filter: grayscale(8%) contrast(1.02);
     transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s, filter 0.35s;
     opacity: 0;
@@ -202,7 +206,7 @@
   .lightbox {
     position: fixed;
     inset: 0;
-    background: rgba(30,31,33,0.97);
+    background: rgba(52,53,58,0.97);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -274,7 +278,7 @@
 <footer>
   <div>
     <h2>About</h2>
-    <p>The city is covered in words. Fading ghost signs, proud shopfronts, hand-painted warnings, accidental poetry. oftypeandthecity is a running collection of type found on the street — photographed as it was found.</p>
+    <p>City types, city characters. A running collection of the city's accidental compositions — its lettering and its people — photographed as found, London &amp; elsewhere.</p>
   </div>
   <div>
     <h2>Say hello</h2>
@@ -309,7 +313,10 @@ PHOTOS.forEach((photo, i) => {
   img.src = photo.src;
   img.alt = photo.caption || "Street photograph";
   img.loading = "lazy";
-  img.addEventListener("load", () => img.classList.add("loaded"));
+  img.addEventListener("load", () => {
+    img.classList.add("loaded");
+    layoutMasonry();
+  });
   fig.appendChild(img);
   if (photo.caption) {
     const cap = document.createElement("figcaption");
@@ -319,6 +326,115 @@ PHOTOS.forEach((photo, i) => {
   fig.addEventListener("click", () => openLightbox(i));
   grid.appendChild(fig);
 });
+
+/* Masonry packer: 12-unit grid, portraits span 4 units, landscapes (ratio > 1.2)
+   span 5 — i.e. 125% of a portrait's width. Each photo drops into whichever
+   position is currently shortest. */
+function layoutMasonry() {
+  const W = grid.clientWidth;
+  const gap = 14;
+  /* 13 units: a row of two portraits and a landscape packs flush (4+4+5) */
+  let units = 13, pSpan = 4, lSpan = 5;
+  if (W <= 560) { units = 1; pSpan = 1; lSpan = 1; }
+  else if (W <= 900) { units = 13; pSpan = 6; lSpan = 7; }
+  const unitW = (W + gap) / units;
+  const heights = new Array(units).fill(0);
+  const topItem = new Array(units).fill(null); /* which item currently ends each column */
+  const items = [];
+
+  const pending = [...document.querySelectorAll("figure.shot")].map(fig => {
+    const img = fig.querySelector("img");
+    const ratio = (img.naturalWidth && img.naturalHeight)
+      ? img.naturalWidth / img.naturalHeight : 0.75;
+    return { fig, ratio, span: Math.min(units, ratio > 1.2 ? lSpan : pSpan) };
+  });
+
+  /* can a ledge of width w be tiled exactly by portrait/landscape spans? */
+  const fillable = w => {
+    if (w === 0) return true;
+    for (let a = 0; a * pSpan <= w; a++) if ((w - a * pSpan) % lSpan === 0) return true;
+    return false;
+  };
+  const soleTop = t => {
+    for (let v = t.x; v < t.x + t.span; v++) if (topItem[v] !== t) return false;
+    return true;
+  };
+
+  let guard = 0;
+  while (pending.length && guard++ < 500) {
+    /* find the lowest ledge: leftmost lowest unit, expanded to its flat run */
+    let minU = 0;
+    for (let u = 1; u < units; u++) if (heights[u] < heights[minU] - 0.5) minU = u;
+    const y = heights[minU];
+    let L = minU, R = minU + 1;
+    while (L > 0 && Math.abs(heights[L - 1] - y) < 1) L--;
+    while (R < units && Math.abs(heights[R] - y) < 1) R++;
+    const run = R - L;
+
+    /* take the first photo that fits AND leaves a tileable remainder, so no
+       stranded slivers; fall back to anything that fits */
+    let idx = pending.findIndex(p => p.span <= run && fillable(run - p.span));
+    if (idx === -1) idx = pending.findIndex(p => p.span <= run);
+
+    if (idx === -1) {
+      /* dead sliver: raise it to the next-lowest neighbour, stretching the
+         photo beneath (slight extra centre-crop) so no hole is left behind */
+      let next = Infinity;
+      if (L > 0) next = heights[L - 1];
+      if (R < units) next = Math.min(next, heights[R]);
+      for (let u = L; u < R; u++) {
+        const t = topItem[u];
+        if (t && soleTop(t)) {
+          t.h = next - gap - t.top;
+          for (let v = t.x; v < t.x + t.span; v++) heights[v] = next;
+        } else {
+          heights[u] = next;
+        }
+      }
+      continue;
+    }
+
+    const p = pending.splice(idx, 1)[0];
+    let span = p.span;
+    if (run === span + 1) span = run; /* absorb a lone spare unit */
+    const top = Math.max(...heights.slice(L, L + span));
+    const natH = (span * unitW - gap) / p.ratio;
+    const item = { fig: p.fig, x: L, span, top, h: natH, natH };
+    items.push(item);
+    for (let u = L; u < L + span; u++) {
+      heights[u] = top + natH + gap;
+      topItem[u] = item;
+    }
+  }
+
+  /* level the bottom edge, as long as no photo has to stretch more than 25%
+     and it's still the bottom-most item across its whole width */
+  const maxH = Math.max(...heights);
+  const done = new Set();
+  for (let u = 0; u < units; u++) {
+    const t = topItem[u];
+    if (!t || done.has(t)) continue;
+    done.add(t);
+    let sole = true;
+    for (let v = t.x; v < t.x + t.span; v++) if (topItem[v] !== t) sole = false;
+    if (!sole) continue;
+    const want = maxH - gap - t.top;
+    if (want > t.h && want <= t.natH * 1.25) {
+      t.h = want;
+      for (let v = t.x; v < t.x + t.span; v++) heights[v] = maxH;
+    }
+  }
+
+  items.forEach(it => {
+    it.fig.style.width = (it.span * unitW - gap) + "px";
+    it.fig.style.height = it.h + "px";
+    it.fig.style.left = (it.x * unitW) + "px";
+    it.fig.style.top = it.top + "px";
+  });
+  grid.style.height = (Math.max(...heights) - gap) + "px";
+}
+window.addEventListener("resize", layoutMasonry);
+layoutMasonry();
 
 /* ---------- Lightbox ---------- */
 const lightbox = document.getElementById("lightbox");

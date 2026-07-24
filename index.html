@@ -66,13 +66,27 @@
 
   /* ---------- Hero ---------- */
   header {
-    min-height: 62vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding: 0 28px 48px;
     border-bottom: 1px solid var(--line);
+    position: relative;
+    background: url("photos/DSCF0334-web.jpg") center / cover no-repeat;
   }
+  /* scrim: keeps the headline readable and fades the photo into the page grey */
+  header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+      rgba(20, 20, 24, 0.25) 0%,
+      rgba(30, 31, 35, 0.40) 55%,
+      rgba(51, 52, 56, 0.94) 100%);
+    pointer-events: none;
+  }
+  header > * { position: relative; z-index: 1; }
 
   h1 {
     font-weight: 900;

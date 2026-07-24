@@ -11,7 +11,7 @@
 const PHOTOS = [
   { src: "photos/DSCF0334-web.jpg", caption: "Funchal, Madeira 2026" },
   { src: "photos/DSCF2537-web.jpg", caption: "The Outernet, London 2026" },
-  { src: "photos/DSCF966912-web.jpg", caption: "Rome 2025" },
+  { src: "photos/DSC0507912-web.jpg", caption: "London 2026" },
   { src: "photos/DSCF968012-web.jpg", caption: "Rome 2025" },
   { src: "photos/DSCF123412-web.jpg", caption: "London 2025" },
   { src: "photos/DSCF514612-web.jpg", caption: "London 2025" },
@@ -20,5 +20,5 @@ const PHOTOS = [
   { src: "photos/DSC0508112-web.jpg", caption: "London 2024" },
   { src: "photos/R000046412-web.jpg", caption: "London 2024" },
   { src: "photos/DSCF120112-web.jpg", caption: "London 2024" },
-  { src: "photos/DSC0507912-web.jpg", caption: "London 2026" },
+  { src: "photos/DSCF966912-web.jpg", caption: "Rome 2025" },
 ];

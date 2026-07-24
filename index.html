@@ -104,21 +104,19 @@
     padding: var(--gap) 28px 28px;
   }
 
-  /* Masonry: equal-width columns, photos stack at natural height */
+  /* Masonry: JS packs the photos into a 12-unit grid — portraits span 4 units,
+     landscapes span 5 (125% of a portrait's width) */
   .grid {
-    columns: 3;
-    column-gap: var(--gap);
+    position: relative;
   }
-  @media (max-width: 900px) { .grid { columns: 2; } }
   @media (max-width: 560px) {
-    .grid { columns: 1; }
     h1 { font-size: clamp(56px, 18vw, 120px); }
   }
 
   figure.shot {
-    break-inside: avoid;
-    margin: 0 0 var(--gap);
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     cursor: zoom-in;
     background: var(--bg-soft);
     overflow: hidden;
@@ -127,7 +125,8 @@
   figure.shot img {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     filter: grayscale(8%) contrast(1.02);
     transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s, filter 0.35s;
     opacity: 0;
@@ -274,7 +273,7 @@
 <footer>
   <div>
     <h2>About</h2>
-    <p>A running collection of the city's accidental compositions — photographed as found, London &amp; elsewhere.</p>
+    <p>City types, city characters. A running collection of the city's accidental compositions — its lettering and its people — photographed as found, London &amp; elsewhere.</p>
   </div>
   <div>
     <h2>Say hello</h2>
@@ -309,7 +308,10 @@ PHOTOS.forEach((photo, i) => {
   img.src = photo.src;
   img.alt = photo.caption || "Street photograph";
   img.loading = "lazy";
-  img.addEventListener("load", () => img.classList.add("loaded"));
+  img.addEventListener("load", () => {
+    img.classList.add("loaded");
+    layoutMasonry();
+  });
   fig.appendChild(img);
   if (photo.caption) {
     const cap = document.createElement("figcaption");
@@ -319,6 +321,49 @@ PHOTOS.forEach((photo, i) => {
   fig.addEventListener("click", () => openLightbox(i));
   grid.appendChild(fig);
 });
+
+/* Masonry packer: 12-unit grid, portraits span 4 units, landscapes (ratio > 1.2)
+   span 5 — i.e. 125% of a portrait's width. Each photo drops into whichever
+   position is currently shortest. */
+function layoutMasonry() {
+  const W = grid.clientWidth;
+  const gap = 14;
+  /* 13 units: a row of two portraits and a landscape packs flush (4+4+5) */
+  let units = 13, pSpan = 4, lSpan = 5;
+  if (W <= 560) { units = 1; pSpan = 1; lSpan = 1; }
+  else if (W <= 900) { units = 13; pSpan = 6; lSpan = 7; }
+  const unitW = (W + gap) / units;
+  const heights = new Array(units).fill(0);
+
+  document.querySelectorAll("figure.shot").forEach(fig => {
+    const img = fig.querySelector("img");
+    const ratio = (img.naturalWidth && img.naturalHeight)
+      ? img.naturalWidth / img.naturalHeight : 0.75;
+    const span = Math.min(units, ratio > 1.2 ? lSpan : pSpan);
+
+    let bestX = 0, bestY = Infinity, bestFlat = false;
+    for (let x = 0; x + span <= units; x++) {
+      const seg = heights.slice(x, x + span);
+      const y = Math.max(...seg);
+      const flat = y - Math.min(...seg) < 1;
+      if (y < bestY - 0.5 || (Math.abs(y - bestY) <= 0.5 && flat && !bestFlat)) {
+        bestY = y; bestX = x; bestFlat = flat;
+      }
+    }
+
+    const w = span * unitW - gap;
+    const h = w / ratio;
+    fig.style.width = w + "px";
+    fig.style.height = h + "px";
+    fig.style.left = (bestX * unitW) + "px";
+    fig.style.top = bestY + "px";
+    for (let x = bestX; x < bestX + span; x++) heights[x] = bestY + h + gap;
+  });
+
+  grid.style.height = (Math.max(...heights) - gap) + "px";
+}
+window.addEventListener("resize", layoutMasonry);
+layoutMasonry();
 
 /* ---------- Lightbox ---------- */
 const lightbox = document.getElementById("lightbox");

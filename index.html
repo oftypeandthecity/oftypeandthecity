@@ -336,8 +336,8 @@ PHOTOS.forEach((photo, i) => {
 function layoutMasonry() {
   const W = grid.clientWidth;
   const gap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gap")) || 24;
-  /* 13 units: a row of two portraits and a landscape packs flush (4+4+5) */
-  let units = 13, pSpan = 4, lSpan = 5;
+  /* 17 units: rows of three standards and a wide pack flush (4+4+4+5) */
+  let units = 17, pSpan = 4, lSpan = 5;
   if (W <= 560) { units = 1; pSpan = 1; lSpan = 1; }
   else if (W <= 900) { units = 13; pSpan = 6; lSpan = 7; }
   const unitW = (W + gap) / units;

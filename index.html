@@ -334,6 +334,8 @@ function layoutMasonry() {
   else if (W <= 900) { units = 13; pSpan = 6; lSpan = 7; }
   const unitW = (W + gap) / units;
   const heights = new Array(units).fill(0);
+  const topItem = new Array(units).fill(null); /* which item currently ends each column */
+  const items = [];
 
   document.querySelectorAll("figure.shot").forEach(fig => {
     const img = fig.querySelector("img");
@@ -351,15 +353,45 @@ function layoutMasonry() {
       }
     }
 
-    const w = span * unitW - gap;
-    const h = w / ratio;
-    fig.style.width = w + "px";
-    fig.style.height = h + "px";
-    fig.style.left = (bestX * unitW) + "px";
-    fig.style.top = bestY + "px";
-    for (let x = bestX; x < bestX + span; x++) heights[x] = bestY + h + gap;
+    /* no gaps: stretch whatever sits under the landing zone up to meet this photo
+       (the image crops slightly taller via object-fit: cover) */
+    for (let u = bestX; u < bestX + span; u++) {
+      if (heights[u] < bestY - 0.5 && topItem[u]) {
+        const t = topItem[u];
+        t.h = bestY - gap - t.top;
+        for (let v = t.x; v < t.x + t.span; v++) heights[v] = bestY;
+      }
+    }
+
+    const natH = (span * unitW - gap) / ratio;
+    const item = { fig, x: bestX, span, top: bestY, h: natH, natH };
+    items.push(item);
+    for (let u = bestX; u < bestX + span; u++) {
+      heights[u] = bestY + natH + gap;
+      topItem[u] = item;
+    }
   });
 
+  /* level the bottom edge, as long as no photo has to stretch more than 25% */
+  const maxH = Math.max(...heights);
+  const done = new Set();
+  for (let u = 0; u < units; u++) {
+    const t = topItem[u];
+    if (!t || done.has(t)) continue;
+    done.add(t);
+    const want = maxH - gap - t.top;
+    if (want > t.h && want <= t.natH * 1.25) {
+      t.h = want;
+      for (let v = t.x; v < t.x + t.span; v++) heights[v] = maxH;
+    }
+  }
+
+  items.forEach(it => {
+    it.fig.style.width = (it.span * unitW - gap) + "px";
+    it.fig.style.height = it.h + "px";
+    it.fig.style.left = (it.x * unitW) + "px";
+    it.fig.style.top = it.top + "px";
+  });
   grid.style.height = (Math.max(...heights) - gap) + "px";
 }
 window.addEventListener("resize", layoutMasonry);

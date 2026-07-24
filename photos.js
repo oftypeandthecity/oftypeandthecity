@@ -21,6 +21,8 @@ const PHOTOS = [
   { src: "photos/R000046412-web.jpg", caption: "London 2024" },
   { src: "photos/DSCF120112-web.jpg", caption: "London 2024" },
   { src: "photos/DSCF966912-web.jpg", caption: "Rome 2025" },
+  { src: "photos/DSCF251812-web.jpg", caption: "London 2026" },
+  { src: "photos/DSCF252312-web.jpg", caption: "London 2026" },
   /* ---- imported from Instagram ---- */
   { src: "photos/instagram/18445031044141531.jpg", caption: "Cleaning at the edge of the world, 2026" },
   { src: "photos/instagram/17980033197028483.jpg", caption: "Cleaning at the edge of the world, 2026" },

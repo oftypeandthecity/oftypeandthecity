@@ -1,0 +1,6 @@
+# Keep the heavy camera originals out of the published site —
+# only the web-sized "-web" copies get deployed.
+photos/*
+!photos/*-web.jpg
+
+.DS_Store

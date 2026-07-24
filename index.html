@@ -10,12 +10,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #3f4045;
-    --bg-soft: #494a4f;
-    --ink: #f2f0eb;
-    --ink-dim: #aeaba4;
-    --line: #595a5f;
-    --gap: 36px;
+    --bg: #e3e4dd;
+    --bg-soft: #d9dad3;
+    --ink: #1e1e1c;
+    --ink-dim: #74746c;
+    --line: #c6c7bf;
+    --gap: 18px;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -78,6 +78,9 @@
     background: url("photos/DSCF0334-web.jpg") center / cover no-repeat;
   }
   header > * { position: relative; z-index: 1; }
+  /* hero text stays light — it sits on the photo, not the page background */
+  header h1 { color: #f2f0eb; }
+  header .hero-row p { color: rgba(242, 240, 235, 0.75); }
 
   h1 {
     font-weight: 900;
@@ -206,7 +209,7 @@
   .lightbox {
     position: fixed;
     inset: 0;
-    background: rgba(52,53,58,0.97);
+    background: rgba(227,228,221,0.97);
     display: flex;
     flex-direction: column;
     align-items: center;

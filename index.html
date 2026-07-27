@@ -123,7 +123,18 @@
     position: relative;
   }
   @media (max-width: 560px) {
-    h1 { width: 34vw; bottom: 8mm; right: 6mm; }
+    /* logo bottom aligns with the bottom of Found Subjects (20px inset) */
+    h1 { width: 34vw; bottom: 20px; right: 6mm; }
+    /* scale all type to ~75% on phones */
+    nav .mark { font-size: 9.75px; }
+    nav a.contact { font-size: 9px; }
+    .hero-row p { font-size: 9.75px; }
+    figure.shot figcaption { font-size: 8.25px; }
+    footer h2 { font-size: 9px; }
+    footer p { font-size: 12.75px; }
+    .foot-meta { font-size: 8.25px; }
+    .lightbox .lb-caption { font-size: 8.25px; }
+    .lightbox button { font-size: 9px; }
   }
 
   figure.shot {

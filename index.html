@@ -85,11 +85,14 @@
   /* headline is the hand-stencil logo, filled with the page background colour
      via a mask so it always tracks the theme */
   h1 {
-    width: min(20.5vw, 155px);
+    position: absolute;
+    top: 25mm;
+    right: 25mm;
+    width: min(45vw, 340px);
     aspect-ratio: 252 / 166;
     background-color: var(--bg);
-    -webkit-mask: url("otatcLogo.png") left bottom / contain no-repeat;
-    mask: url("otatcLogo.png") left bottom / contain no-repeat;
+    -webkit-mask: url("otatcLogo.png") center / contain no-repeat;
+    mask: url("otatcLogo.png") center / contain no-repeat;
     font-size: 0; /* hide the accessible text, keep it for screen readers/SEO */
     color: transparent;
   }
@@ -121,7 +124,7 @@
     position: relative;
   }
   @media (max-width: 560px) {
-    h1 { width: 44vw; }
+    h1 { width: 60vw; top: 16mm; right: 6mm; }
   }
 
   figure.shot {

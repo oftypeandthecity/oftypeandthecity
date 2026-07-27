@@ -72,7 +72,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 0 28px 48px;
+    padding: 0 28px 20px; /* Found Subjects sits 20px from bottom, matching Contact's 20px from top */
     border-bottom: 1px solid var(--line);
     position: relative;
     background: url("photos/DSCF0334-web.jpg") center / cover no-repeat;
@@ -90,9 +90,8 @@
     right: 10mm;
     width: min(45vw, 340px);
     aspect-ratio: 351 / 248;
-    background-color: var(--bg);
-    -webkit-mask: url("otatcLogo.png") center / contain no-repeat;
-    mask: url("otatcLogo.png") center / contain no-repeat;
+    /* two-tone artwork shown as-is (not recoloured) */
+    background: url("otatcLogo.png") center / contain no-repeat;
     font-size: 0; /* hide the accessible text, keep it for screen readers/SEO */
     color: transparent;
   }

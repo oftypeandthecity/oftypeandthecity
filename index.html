@@ -66,8 +66,10 @@
 
   /* ---------- Hero ---------- */
   header {
-    /* same aspect ratio as the background photo, so the whole frame is visible */
+    /* 3:2 like the photo, but never taller than the viewport so the bottom
+       content (logo + Found Subjects) is always in view */
     aspect-ratio: 3 / 2;
+    max-height: 88vh;
     min-height: 0;
     display: flex;
     flex-direction: column;

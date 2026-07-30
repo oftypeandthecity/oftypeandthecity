@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>oftypeandthecity — Found Subjects</title>
+<title>Found Subjects</title>
 <meta name="description" content="oftypeandthecity — found subjects: the city's accidental compositions, its type and its people, photographed as found.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,18 +82,14 @@
      as one with the canvas below */
   header .hero-row p { color: rgba(227, 228, 221, 0.75); }
 
-  /* headline is the hand-stencil logo, filled with the page background colour
-     via a mask so it always tracks the theme */
+  /* logo removed; keep an accessible <h1> for SEO, visually hidden */
   h1 {
     position: absolute;
-    bottom: 10mm;
-    right: 10mm;
-    width: min(45vw, 340px);
-    aspect-ratio: 351 / 248;
-    /* two-tone artwork shown as-is (not recoloured) */
-    background: url("otatcLogo.png") center / contain no-repeat;
-    font-size: 0; /* hide the accessible text, keep it for screen readers/SEO */
-    color: transparent;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 
   .hero-row {
@@ -124,7 +120,6 @@
   }
   @media (max-width: 560px) {
     /* logo bottom aligns with the bottom of Found Subjects (20px inset) */
-    h1 { width: 34vw; bottom: 20px; right: 6mm; }
     /* scale all type to ~75% on phones */
     nav .mark { font-size: 9.75px; }
     nav a.contact { font-size: 9px; }
@@ -279,12 +274,12 @@
 <body>
 
 <nav>
-  <a class="mark" href="#">oftypeandthecity</a>
+  <a class="mark" href="#">Found Subjects</a>
   <a class="contact" href="mailto:craigwilkinson@me.com">Contact</a>
 </nav>
 
 <header>
-  <h1>Of type and the city</h1>
+  <h1>Found Subjects</h1>
   <div class="hero-row">
     <p>Found Subjects</p>
   </div>
@@ -303,7 +298,7 @@
     <h2>Say hello</h2>
     <p><a href="mailto:craigwilkinson@me.com">craigwilkinson@me.com</a></p>
   </div>
-  <p class="foot-meta">&copy; <span id="year"></span> oftypeandthecity — All photographs are the property of the photographer.</p>
+  <p class="foot-meta">&copy; <span id="year"></span> Found Subjects — All photographs are the property of the photographer.</p>
 </footer>
 
 <div class="lightbox" id="lightbox" role="dialog" aria-label="Photo viewer">

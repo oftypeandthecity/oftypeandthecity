@@ -82,14 +82,14 @@
      as one with the canvas below */
   header .hero-row p { color: rgba(227, 228, 221, 0.75); }
 
-  /* logo removed; keep an accessible <h1> for SEO, visually hidden */
+  /* "Found Subjects" as the hero headline, sitting at the bottom of the photo */
   h1 {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: clamp(46px, 10vw, 150px);
+    line-height: 0.86;
+    letter-spacing: -0.02em;
+    color: var(--bg); /* light, to read over the photo */
   }
 
   .hero-row {
@@ -279,10 +279,7 @@
 </nav>
 
 <header>
-  <h1>Found Subjects</h1>
-  <div class="hero-row">
-    <p>Found Subjects</p>
-  </div>
+  <h1>Found<br>Subjects</h1>
 </header>
 
 <main>

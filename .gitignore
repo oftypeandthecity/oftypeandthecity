@@ -3,5 +3,6 @@
 photos/*
 !photos/*-web.jpg
 !photos/instagram/
+!photos/DSCF0334-hero.jpg
 
 .DS_Store

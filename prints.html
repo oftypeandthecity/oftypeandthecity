@@ -449,6 +449,11 @@ function lowestPrice() {
 }
 const money = n => PRINT_SETTINGS.symbol + n;
 
+/* Place and year are both optional — a caption doesn't always carry
+   either. Join whatever is there rather than printing "undefined". */
+const subtitle = p => [p.place, p.year].filter(Boolean).join(" · ");
+const describe = p => [p.title, [p.place, p.year].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+
 if (PRINTS.length === 0) {
   const note = document.createElement("p");
   note.textContent = "Prints coming soon";
@@ -465,7 +470,7 @@ PRINTS.forEach((print, i) => {
   frame.className = "frame";
   const img = document.createElement("img");
   img.src = print.src;
-  img.alt = print.title + ", " + print.place + " " + print.year;
+  img.alt = describe(print);
   img.loading = "lazy";
   img.addEventListener("load", () => img.classList.add("loaded"));
   frame.appendChild(img);
@@ -474,7 +479,7 @@ PRINTS.forEach((print, i) => {
   meta.className = "meta";
   const name = document.createElement("span");
   name.className = "name";
-  name.textContent = print.title + ", " + print.year;
+  name.textContent = [print.title, print.year].filter(Boolean).join(", ");
   const from = document.createElement("span");
   from.className = "from";
   from.textContent = "From " + money(lowestPrice());
@@ -511,9 +516,9 @@ function openPrint(i) {
   currentSize = PRINT_PRODUCTS[0].sizes[0].id;
 
   pvImg.src = currentPrint.src;
-  pvImg.alt = currentPrint.title + ", " + currentPrint.place + " " + currentPrint.year;
+  pvImg.alt = describe(currentPrint);
   pvTitle.textContent = currentPrint.title;
-  pvSub.textContent = currentPrint.place + " · " + currentPrint.year;
+  pvSub.textContent = subtitle(currentPrint);
 
   renderProducts();
   renderSizes();
@@ -589,7 +594,7 @@ function renderPrice() {
   } else {
     const subject = "Print enquiry: " + currentPrint.title + " (" + product.name + ", " + size.label + ")";
     const body = "I'd like to order:\n\n"
-      + currentPrint.title + " — " + currentPrint.place + " " + currentPrint.year + "\n"
+      + describe(currentPrint) + "\n"
       + product.name + ", " + size.label + " (" + size.dims + ")\n"
       + money(size.price) + " plus shipping\n\n"
       + location.origin + location.pathname + "#" + currentPrint.id + "\n";

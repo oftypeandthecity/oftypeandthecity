@@ -52,7 +52,13 @@
     text-decoration: none;
   }
 
-  nav a.contact {
+  nav .nav-links {
+    display: flex;
+    gap: 22px;
+    align-items: baseline;
+  }
+
+  nav .nav-links a {
     font-size: 12px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -62,7 +68,7 @@
     padding-bottom: 2px;
     transition: border-color 0.2s;
   }
-  nav a.contact:hover { border-color: #fff; }
+  nav .nav-links a:hover { border-color: #fff; }
 
   /* ---------- Hero ---------- */
   header {
@@ -124,7 +130,8 @@
     /* logo bottom aligns with the bottom of Found Subjects (20px inset) */
     /* scale all type to ~75% on phones */
     nav .mark { font-size: 9.75px; }
-    nav a.contact { font-size: 9px; }
+    nav .nav-links { gap: 14px; }
+    nav .nav-links a { font-size: 9px; }
     .hero-row p { font-size: 9.75px; }
     figure.shot figcaption { font-size: 8.25px; }
     footer h2 { font-size: 9px; }
@@ -277,7 +284,10 @@
 
 <nav>
   <a class="mark" href="#">Found Subjects</a>
-  <a class="contact" href="mailto:craigwilkinson@me.com">Contact</a>
+  <span class="nav-links">
+    <a href="prints.html">Prints</a>
+    <a href="mailto:craigwilkinson@me.com">Contact</a>
+  </span>
 </nav>
 
 <header>
@@ -294,7 +304,9 @@
     <p>City types, city characters. A running collection of the city's accidental compositions — its lettering and its people — photographed as found, London &amp; elsewhere.</p>
   </div>
   <div>
-    <h2>Say hello</h2>
+    <h2>Prints</h2>
+    <p>Selected photographs are available as archival prints, made to order and shipped worldwide. <a href="prints.html">See the prints</a>.</p>
+    <h2 style="margin-top:34px">Say hello</h2>
     <p><a href="mailto:craigwilkinson@me.com">craigwilkinson@me.com</a></p>
   </div>
   <p class="foot-meta">&copy; <span id="year"></span> Craig Wilkinson · Found Subjects. All photographs are copyright and may not be reproduced, copied, or used in any form without written permission.</p>

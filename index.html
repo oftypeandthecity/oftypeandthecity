@@ -84,9 +84,6 @@
     background: url("photos/DSCF0334-hero.jpg") center / cover no-repeat;
   }
   header > * { position: relative; z-index: 1; }
-  /* hero text sits on the photo; use the page background colour so it reads
-     as one with the canvas below */
-  header .hero-row p { color: rgba(227, 228, 221, 0.75); }
 
   /* "Found Subjects" as the hero headline, sitting at the bottom of the photo */
   h1 {
@@ -100,20 +97,17 @@
     color: #ffffff;
   }
 
-  .hero-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 26px;
-  }
-
-  .hero-row p {
-    font-size: 13px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-dim);
+  /* Byline, sitting under the headline on the photo. Sentence case and a
+     lighter weight so it reads as a line of writing rather than a label. */
+  .byline {
+    font-family: "Raleway", "Archivo", sans-serif;
+    font-weight: 200;
+    font-size: clamp(14px, 1.45vw, 21px);
+    line-height: 1.45;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.88);
+    max-width: 34ch;
+    margin-top: 22px;
   }
 
   /* ---------- Gallery ---------- */
@@ -132,7 +126,7 @@
     nav .mark { font-size: 9.75px; }
     nav .nav-links { gap: 14px; }
     nav .nav-links a { font-size: 9px; }
-    .hero-row p { font-size: 9.75px; }
+    .byline { font-size: 13px; letter-spacing: 0.04em; max-width: none; margin-top: 16px; }
     figure.shot figcaption { font-size: 8.25px; }
     footer h2 { font-size: 9px; }
     footer p { font-size: 12.75px; }
@@ -292,6 +286,7 @@
 
 <header>
   <h1>Found Subjects</h1>
+  <p class="byline">contrast and compare. conflict stacked and laid bare. Found as found. London and elsewhere.</p>
 </header>
 
 <main>

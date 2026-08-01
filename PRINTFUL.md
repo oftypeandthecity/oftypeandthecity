@@ -48,13 +48,13 @@ today and wire up Stripe as you go.
    three stocks — Enhanced Matte Poster, Museum-Quality Matte Poster, Framed Poster.
 3. Upload the **high-resolution** file. This is the one that matters, and it does
    **not** go in this repo — the images in `photos/` are ~1800px web previews, far too
-   small to print at A2. Printful wants roughly 300 DPI at the finished size:
+   small to print at A3. Printful wants roughly 300 DPI at the finished size:
 
    | Size | Pixels needed at 300 DPI |
    |---|---|
    | A4 | 2480 × 3508 |
    | A3 | 3508 × 4961 |
-   | A2 | 4961 × 7016 |
+   | A2 *(bespoke only)* | 4961 × 7016 |
 
 4. **Aspect ratio.** A-series paper is 1:1.414; your 3:2 camera frames are not. If you
    let Printful fill the sheet it will crop your composition. Better: export the print
@@ -108,14 +108,14 @@ Copy each link into the matching print's `buy` map in `prints.js`, keyed
   place: "London",
   year: 2026,
   buy: {
-    "matte:a3":  "https://buy.stripe.com/xxxxxxxxxxxx",
-    "matte:a2":  "https://buy.stripe.com/yyyyyyyyyyyy",
+    "matte:a4":  "https://buy.stripe.com/xxxxxxxxxxxx",
+    "matte:a3":  "https://buy.stripe.com/yyyyyyyyyyyy",
     "museum:a3": "https://buy.stripe.com/zzzzzzzzzzzz",
   },
 },
 ```
 
-Product ids are `matte`, `museum`, `framed`; size ids are `a4`, `a3`, `a2`. Both are
+Product ids are `matte`, `museum`, `framed`; size ids are `a4` and `a3`. Both are
 defined at the top of `prints.js` — change them there and the keys change with them.
 
 Commit, push, done. GitHub Pages redeploys on push.
@@ -151,6 +151,12 @@ Step 2 alone is enough to get it on the site with an email enquiry button.
 ---
 
 ## Things worth knowing
+
+**Sizes stop at A3.** Every print detail carries a *"Larger than A3?"* link that opens
+an email enquiry, so the demand still reaches you without committing to a price. Quote
+those by hand — a large print depends on the original file, and not every frame holds
+up past A3. If a size starts selling often enough to be worth it, add it to
+`PRINT_PRODUCTS` and make the Payment Links.
 
 **VAT.** Printful charges you VAT on UK/EU orders. Once you're over the UK registration
 threshold you'll need to charge it too — Stripe Tax handles this on Payment Links for a

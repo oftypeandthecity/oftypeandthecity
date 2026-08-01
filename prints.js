@@ -33,6 +33,11 @@ const PRINT_SETTINGS = {
   /* Standing copy shown on every print. */
   dispatchNote: "Printed and dispatched by Printful within 2–5 business days. Shipping calculated at checkout.",
   editionNote: "Open edition, signed on the reverse on request.",
+
+  /* Sizes stop at A3. Anything larger is quoted by hand — it depends on
+     the original file, and not every frame holds up past A3. */
+  largerLabel: "Larger than A3?",
+  largerLink: "Ask about a bigger print",
 };
 
 /* ---------------------------------------------------------
@@ -56,7 +61,6 @@ const PRINT_PRODUCTS = [
     sizes: [
       { id: "a4", label: "A4", dims: "21 × 29.7 cm", price: 30 },
       { id: "a3", label: "A3", dims: "29.7 × 42 cm", price: 45 },
-      { id: "a2", label: "A2", dims: "42 × 59.4 cm", price: 65 },
     ],
   },
   {
@@ -67,7 +71,6 @@ const PRINT_PRODUCTS = [
     sizes: [
       { id: "a4", label: "A4", dims: "21 × 29.7 cm", price: 45 },
       { id: "a3", label: "A3", dims: "29.7 × 42 cm", price: 65 },
-      { id: "a2", label: "A2", dims: "42 × 59.4 cm", price: 90 },
     ],
   },
   {
@@ -78,7 +81,6 @@ const PRINT_PRODUCTS = [
     sizes: [
       { id: "a4", label: "A4", dims: "21 × 29.7 cm", price: 75 },
       { id: "a3", label: "A3", dims: "29.7 × 42 cm", price: 100 },
-      { id: "a2", label: "A2", dims: "42 × 59.4 cm", price: 145 },
     ],
   },
 ];

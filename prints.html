@@ -278,6 +278,20 @@
     text-transform: none;
   }
 
+  .pv-larger {
+    margin-top: 14px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink-dim);
+  }
+  .pv-larger a {
+    color: var(--ink-dim);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .pv-larger a:hover { color: var(--ink); border-color: var(--ink-dim); }
+
   .pv-blurb {
     margin-top: 14px;
     font-size: 14px;
@@ -429,6 +443,7 @@
       <div class="pv-group">
         <h3>Size</h3>
         <div class="opts" id="pvSizes"></div>
+        <p class="pv-larger"><span id="pvLargerLabel"></span> <a id="pvLarger" href="#"></a></p>
       </div>
 
       <p class="pv-price" id="pvPrice"></p>
@@ -500,6 +515,7 @@ const pvSizes = document.getElementById("pvSizes");
 const pvBlurb = document.getElementById("pvBlurb");
 const pvPrice = document.getElementById("pvPrice");
 const pvBuy = document.getElementById("pvBuy");
+const pvLarger = document.getElementById("pvLarger");
 
 let currentPrint = null;
 let currentProduct = PRINT_PRODUCTS[0].id;
@@ -507,6 +523,8 @@ let currentSize = PRINT_PRODUCTS[0].sizes[0].id;
 
 document.getElementById("pvDispatch").textContent = PRINT_SETTINGS.dispatchNote;
 document.getElementById("pvEdition").textContent = PRINT_SETTINGS.editionNote;
+document.getElementById("pvLargerLabel").textContent = PRINT_SETTINGS.largerLabel;
+pvLarger.textContent = PRINT_SETTINGS.largerLink;
 
 const productById = id => PRINT_PRODUCTS.find(p => p.id === id);
 
@@ -583,6 +601,15 @@ function renderPrice() {
   const product = productById(currentProduct);
   const size = product.sizes.find(s => s.id === currentSize);
   pvPrice.textContent = money(size.price);
+
+  /* Bigger than A3 is quoted by hand — it depends on the original file. */
+  pvLarger.href = "mailto:" + PRINT_SETTINGS.enquiryEmail
+    + "?subject=" + encodeURIComponent("Large print enquiry: " + currentPrint.title)
+    + "&body=" + encodeURIComponent(
+        "I'd like to ask about a larger print of:\n\n"
+        + describe(currentPrint) + "\n"
+        + location.origin + location.pathname + "#" + currentPrint.id + "\n"
+      );
 
   /* A Payment Link if one exists for this exact variant, otherwise an
      email enquiry — so a half-configured shop never shows a dead button. */

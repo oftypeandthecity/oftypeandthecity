@@ -24,7 +24,7 @@
 
      · "camera original — likely fine" — a photo you shot and
        still hold the full-size file for. Export at ~300 DPI for
-       the largest size you want to sell (A2 wants 4961 × 7016).
+       the largest size you sell (A3, the shop cap, wants 3508 × 4961).
 
      · "original needed" — imported from Instagram, which serves
        a square crop at 1080–1440 px. Not printable as-is at any

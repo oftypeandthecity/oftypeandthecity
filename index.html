@@ -52,7 +52,13 @@
     text-decoration: none;
   }
 
-  nav a.contact {
+  nav .nav-links {
+    display: flex;
+    gap: 22px;
+    align-items: baseline;
+  }
+
+  nav .nav-links a {
     font-size: 12px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -62,7 +68,7 @@
     padding-bottom: 2px;
     transition: border-color 0.2s;
   }
-  nav a.contact:hover { border-color: #fff; }
+  nav .nav-links a:hover { border-color: #fff; }
 
   /* ---------- Hero ---------- */
   header {
@@ -78,9 +84,6 @@
     background: url("photos/DSCF0334-hero.jpg") center / cover no-repeat;
   }
   header > * { position: relative; z-index: 1; }
-  /* hero text sits on the photo; use the page background colour so it reads
-     as one with the canvas below */
-  header .hero-row p { color: rgba(227, 228, 221, 0.75); }
 
   /* "Found Subjects" as the hero headline, sitting at the bottom of the photo */
   h1 {
@@ -94,20 +97,17 @@
     color: #ffffff;
   }
 
-  .hero-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 26px;
-  }
-
-  .hero-row p {
-    font-size: 13px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-dim);
+  /* Byline, sitting under the headline on the photo. Sentence case and a
+     lighter weight so it reads as a line of writing rather than a label. */
+  .byline {
+    font-family: "Raleway", "Archivo", sans-serif;
+    font-weight: 200;
+    font-size: clamp(14px, 1.45vw, 21px);
+    line-height: 1.45;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.88);
+    max-width: 34ch;
+    margin-top: 22px;
   }
 
   /* ---------- Gallery ---------- */
@@ -124,8 +124,9 @@
     /* logo bottom aligns with the bottom of Found Subjects (20px inset) */
     /* scale all type to ~75% on phones */
     nav .mark { font-size: 9.75px; }
-    nav a.contact { font-size: 9px; }
-    .hero-row p { font-size: 9.75px; }
+    nav .nav-links { gap: 14px; }
+    nav .nav-links a { font-size: 9px; }
+    .byline { font-size: 13px; letter-spacing: 0.04em; max-width: none; margin-top: 16px; }
     figure.shot figcaption { font-size: 8.25px; }
     footer h2 { font-size: 9px; }
     footer p { font-size: 12.75px; }
@@ -277,11 +278,15 @@
 
 <nav>
   <a class="mark" href="#">Found Subjects</a>
-  <a class="contact" href="mailto:craigwilkinson@me.com">Contact</a>
+  <span class="nav-links">
+    <a href="prints.html">Prints</a>
+    <a href="mailto:craigwilkinson@me.com">Contact</a>
+  </span>
 </nav>
 
 <header>
   <h1>Found Subjects</h1>
+  <p class="byline">contrast and compare. conflict stacked and laid bare. Found as found. London and elsewhere.</p>
 </header>
 
 <main>
@@ -294,7 +299,9 @@
     <p>City types, city characters. A running collection of the city's accidental compositions — its lettering and its people — photographed as found, London &amp; elsewhere.</p>
   </div>
   <div>
-    <h2>Say hello</h2>
+    <h2>Prints</h2>
+    <p>Selected photographs are available as archival prints, made to order and shipped worldwide. <a href="prints.html">See the prints</a>.</p>
+    <h2 style="margin-top:34px">Say hello</h2>
     <p><a href="mailto:craigwilkinson@me.com">craigwilkinson@me.com</a></p>
   </div>
   <p class="foot-meta">&copy; <span id="year"></span> Craig Wilkinson · Found Subjects. All photographs are copyright and may not be reproduced, copied, or used in any form without written permission.</p>
